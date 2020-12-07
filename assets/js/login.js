@@ -1,8 +1,10 @@
 $(function() {
+    //跳转至注册页面
     $('#link_reg').on('click', function() {
-        $('.login-box').hide();
-        $('.reg-box').show();
-    })
+            $('.login-box').hide();
+            $('.reg-box').show();
+        })
+        //跳转至登录页面
     $('#link_login').on('click', function() {
         $('.login-box').show();
         $('.reg-box').hide();
@@ -10,7 +12,8 @@ $(function() {
 
     //从 layui 获取 form 对象
     var form = layui.form
-        //通过lay-verify（）自定义效验规则
+    var layer = layui.layer;
+    //通过lay-verify（）自定义效验规则
     form.verify({
             //自定义一个pwsd效验规则
             pwsd: [/^[\S]{6,12}$/, '密码必须6到12位，且不能出现空格'],
@@ -24,24 +27,41 @@ $(function() {
         })
         // 监听注册事件的提交事件
     $('#form_reg').on('submit', function(e) {
-        e.preventDefault();
-        $.post('http://ajax.frontend.itheima.net/api/reguser', { username: $('#form_reg [name=username]').val(), password: $('#form_reg [name=password]').val() }, function(res) {
-            if (res.status !== 0) {
-                return console.log(res.message);
-            }
-            console.log('注册成功');
-            $('.login-box').show();
-            $('.reg-box').hide();
+            e.preventDefault();
+            var data = { username: $('#form_reg [name=username]').val(), password: $('#form_reg [name=password]').val() }
+            $.post('http://ajax.frontend.itheima.net/api/reguser', data, function(res) {
+                if (res.status !== 0) {
+                    return layer.msg(res.message);
+                }
+                layer.msg('注册成功');
+                $('.login-box').show();
+                $('.reg-box').hide();
+            })
         })
-    })
+        // 监听登录事件的提交事件
     $('#form_login').on('submit', function(e) {
         e.preventDefault();
-        $.post('http://ajax.frontend.itheima.net/api/login', { username: $('#form_login [name=username]').val(), password: $('#form_login [name=password]').val() }, function(res) {
-            if (res.status !== 0) {
-                return console.log(res.message);
-            }
-            localStorage.setItem('token', res.token)
-            location.href = '/index.html';
-        })
+        $.ajax({
+                method: 'POST',
+                url: 'http://ajax.frontend.itheima.net/api/login',
+                data: $(this).serialize(),
+                success: function(res) {
+                    if (res.status !== 0) {
+                        return layer.msg(res.message);
+                    }
+                    localStorage.setItem('token', res.token)
+                    location.href = '/index.html';
+
+                }
+            })
+            // var data = { username: $('#form_login [name=username]').val(), password: $('#form_login [name=password]').val() };
+            // $.post('http://ajax.frontend.itheima.net/api/login', data, function(res) {
+            //     if (res.status !== 0) {
+            //         return layer.msg(res.message);
+            //     }
+            //     layer.msg('注册成功，请登录');
+            //     localStorage.setItem('token', res.token)
+            //     location.href = '/index.html';
+            // })
     })
 })
