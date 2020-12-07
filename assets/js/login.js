@@ -34,4 +34,13 @@ $(function() {
             $('.reg-box').hide();
         })
     })
+    $('#form_login').on('click', function(e) {
+        e.preventDefault();
+        $.post('http://ajax.frontend.itheima.net/api/login', { username: $('#form_login [name=username]').val(), password: $('#form_login [name=password]').val() }, function(res) {
+            if (res.status !== 0) {
+                return console.log(res.message);
+            }
+
+        })
+    })
 })
