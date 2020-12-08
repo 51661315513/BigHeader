@@ -29,7 +29,7 @@ $(function() {
     $('#form_reg').on('submit', function(e) {
             e.preventDefault();
             var data = { username: $('#form_reg [name=username]').val(), password: $('#form_reg [name=password]').val() }
-            $.post('http://ajax.frontend.itheima.net/api/reguser', data, function(res) {
+            $.post('/api/reguser', data, function(res) {
                 if (res.status !== 0) {
                     return layer.msg(res.message);
                 }
@@ -41,27 +41,27 @@ $(function() {
         // 监听登录事件的提交事件
     $('#form_login').on('submit', function(e) {
         e.preventDefault();
-        $.ajax({
-                method: 'POST',
-                url: 'http://ajax.frontend.itheima.net/api/login',
-                data: $(this).serialize(),
-                success: function(res) {
-                    if (res.status !== 0) {
-                        return layer.msg(res.message);
-                    }
-                    localStorage.setItem('token', res.token)
-                    location.href = '/index.html';
+        // $.ajax({
+        //         method: 'POST',
+        //         url: 'http://ajax.frontend.itheima.net/api/login',
+        //         data: $(this).serialize(),
+        //         success: function(res) {
+        //             if (res.status !== 0) {
+        //                 return layer.msg(res.message);
+        //             }
+        //             localStorage.setItem('token', res.token)
+        //             location.href = '/index.html';
 
-                }
-            })
-            // var data = { username: $('#form_login [name=username]').val(), password: $('#form_login [name=password]').val() };
-            // $.post('http://ajax.frontend.itheima.net/api/login', data, function(res) {
-            //     if (res.status !== 0) {
-            //         return layer.msg(res.message);
-            //     }
-            //     layer.msg('注册成功，请登录');
-            //     localStorage.setItem('token', res.token)
-            //     location.href = '/index.html';
-            // })
+        //         }
+        //     })
+        var data = { username: $('#form_login [name=username]').val(), password: $('#form_login [name=password]').val() };
+        $.post('/api/login', data, function(res) {
+            if (res.status !== 0) {
+                return layer.msg(res.message);
+            }
+            layer.msg('注册成功，请登录');
+            localStorage.setItem('token', res.token)
+            location.href = '/index.html';
+        })
     })
 })
